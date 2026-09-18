@@ -1,0 +1,536 @@
+/**
+ * Bespoke, feature-scoped styles for the auth screen's split-card + animated
+ * "blade" transition. Deliberate exception to the app's Tailwind-only
+ * convention (see docs/ARCHITECTURE.md#design-system) — this page uses its
+ * own dark green/gold editorial palette, distinct from the rest of the
+ * app's Tailwind blue/gray dashboard theme, and the skewed, multi-state
+ * blade animation isn't practical to express as Tailwind utility classes.
+ */
+
+/**
+ * `--sweep` must be a REGISTERED custom property for the reveal-mask trick
+ * to work smoothly. `.auth-blade` and `.blade-inner` both read `var(--sweep)`
+ * in their own transform — the blade's transform, and the inner counter-
+ * transform that cancels it (see the comment above `.auth-blade` below).
+ * An unregistered custom property doesn't interpolate — it snaps straight
+ * to its new value while `transform` (a natively animatable property)
+ * keeps transitioning smoothly, so the two fall out of sync for the whole
+ * 900ms and only re-align at the very end (verified by inspecting
+ * `.brand-content`'s live getBoundingClientRect() mid-sweep — it was ~730px
+ * off). Registering `--sweep` as a `<percentage>` makes it interpolate
+ * per-frame like any other animatable value, keeping both elements in sync
+ * throughout. AuthPage.tsx transitions `--sweep` itself (not `transform`)
+ * for exactly this reason.
+ */
+@property --sweep {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
+.auth-page {
+  --auth-bg: #031b17;
+  --green-dark: #07352d;
+  --green: #0b6655;
+  --green-light: #159a78;
+
+  --cream: #f7f5ef;
+
+  --gold: #c9a45c;
+  --gold-dim: #e1c889;
+  --text-dark: #182622;
+  --text-muted: #7a817c;
+
+  --radius: 22px;
+
+  /* Defaults — AuthBlade.tsx always sets these inline, but a fallback keeps this file self-contained. */
+  --rake: -13deg;
+  --sweep: -230%;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+
+  /* Green center fading to a near-black vignette at the edges — the same
+     palette as the card, not just a flat near-black backdrop. */
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      rgba(20, 119, 99, 0.16),
+      transparent 40%
+    ),
+    radial-gradient(ellipse at center, var(--green-dark) 0%, var(--auth-bg) 72%);
+
+  color: white;
+  overflow: hidden;
+}
+
+/* ===== Card ===== */
+
+.auth-card {
+  position: relative;
+  width: min(920px, 100%);
+  min-height: 500px;
+  height: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius);
+  background: var(--cream);
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.35),
+    0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+/* Brand and form panels swap sides by mode — brand sits on the left for
+   sign-up, right for sign-in (matches the reference exactly). Grid `order`
+   over DOM reordering keeps focus order/tab order matching visual order
+   without touching markup. */
+.brand-panel {
+  order: 1;
+}
+.form-panel {
+  order: 2;
+}
+.auth-card[data-mode='login'] .brand-panel {
+  order: 2;
+}
+.auth-card[data-mode='login'] .form-panel {
+  order: 1;
+}
+
+/* ===== Brand panel ===== */
+
+.brand-panel {
+  position: relative;
+  display: none;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(31, 131, 108, 0.15),
+      transparent 35%
+    ),
+    var(--green-dark);
+  overflow: hidden;
+}
+
+.brand-panel::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  left: -180px;
+  bottom: -220px;
+  border-radius: 50%;
+  background: rgba(196, 155, 90, 0.06);
+}
+
+.brand-content {
+  position: absolute;
+  left: 56px;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.brand-name {
+  display: block;
+  margin-bottom: 22px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: white;
+}
+
+.brand-content h1 {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 48px);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -2px;
+  color: white;
+}
+
+.brand-content h1 em {
+  color: var(--gold);
+  font-family: 'Lora', Georgia, serif;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.brand-content p {
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12.5px;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+.brand-kicker {
+  display: block;
+  margin-bottom: 14px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+
+/* ===== Form panel ===== */
+
+.form-panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 45px 32px;
+  background: linear-gradient(135deg, #f8f5ed, var(--cream));
+  color: var(--text-dark);
+}
+
+.auth-form {
+  width: min(100%, 360px);
+}
+
+.form-heading {
+  margin-bottom: 25px;
+}
+
+.form-kicker {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  color: var(--gold);
+}
+
+.form-heading h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -0.8px;
+}
+
+.form-heading p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ===== Fields ===== */
+
+.auth-field {
+  margin-bottom: 18px;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #706e65;
+}
+
+.field-wrapper {
+  position: relative;
+  border-bottom: 1px solid #c9c2b4;
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.field-wrapper:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 2px 0 var(--gold);
+}
+
+/* The wrapper's gold underline above is the focus indicator here — suppress the app-wide blue ring so it doesn't double up on the input itself. */
+.field-wrapper input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.field-wrapper.has-error {
+  border-color: #a3413a;
+}
+
+.field-wrapper input {
+  width: 100%;
+  height: 34px;
+  padding: 0 26px 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 13px;
+}
+
+.field-wrapper input::placeholder {
+  color: #aaa69c;
+}
+
+.field-icon {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  height: 17px;
+  color: #9a978e;
+}
+
+.field-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.field-icon.is-button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.field-icon.is-button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.field-error {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: #a3413a;
+}
+
+/* ===== Non-field errors ===== */
+
+.form-error {
+  margin-bottom: 18px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(163, 65, 58, 0.25);
+  background: rgba(163, 65, 58, 0.06);
+  color: #a3413a;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+/* ===== Form options ===== */
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0 22px;
+  font-size: 11px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #77756d;
+  cursor: pointer;
+}
+
+.remember input {
+  accent-color: var(--green);
+}
+
+.text-button,
+.switch-button {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.text-button {
+  color: var(--green);
+  text-decoration: underline;
+}
+
+/* ===== Submit button ===== */
+
+.submit-button {
+  width: 100%;
+  height: 43px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--green-light), var(--green));
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(6, 82, 67, 0.22);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+.submit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(6, 82, 67, 0.28);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ===== Switch link ===== */
+
+.switch-text {
+  margin: 18px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: #8a877f;
+}
+
+.switch-button {
+  color: var(--text-dark);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.switch-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ===== Password strength ===== */
+
+.password-strength {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: -7px;
+  margin-bottom: 20px;
+}
+
+.password-strength span {
+  width: 24px;
+  height: 3px;
+  border-radius: 10px;
+  background: #d8d2c6;
+}
+
+.password-strength small {
+  margin-left: 4px;
+  font-size: 9px;
+  color: #77756d;
+}
+
+/* ===== The animated blade =====
+ *
+ * A reveal mask, not a moving label. `.auth-blade` is a full-card-size,
+ * skewed rectangle that translates across — `overflow: hidden` on it is
+ * what turns that into a diagonal window. `.blade-inner` carries the exact
+ * inverse transform (negated, and in reverse order — inverting a composed
+ * skew+translate requires both), which cancels the parent's transform for
+ * everything inside it. Net effect: the preview content renders exactly
+ * where it will sit once the real BrandPanel settles into place — it
+ * isn't a copy that slides across, it's the same content being unmasked.
+ * `--rake`/`--sweep` are set inline by AuthBlade.tsx.
+ */
+
+.auth-blade {
+  position: absolute;
+  inset: -5% 0 auto 0;
+  z-index: 10;
+  width: 100%;
+  height: 110%;
+  overflow: hidden;
+  pointer-events: none;
+  transform: skewX(var(--rake)) translateX(var(--sweep));
+  background: linear-gradient(135deg, #042b23, #06382d);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.12);
+}
+
+.auth-blade::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: rgba(196, 155, 90, 0.8);
+}
+
+.blade-inner {
+  width: 100%;
+  height: 100%;
+  color: white;
+  transform: translateX(calc(-1 * var(--sweep))) skewX(calc(-1 * var(--rake)));
+}
+
+/* Mirrors .brand-content's own left/bottom anchor exactly, so the preview
+   lines up pixel-for-pixel with wherever the real panel is about to land. */
+.auth-blade[data-preview='login'] .brand-content {
+  left: auto;
+  right: 56px;
+  text-align: right;
+}
+
+/* ===== Caption ===== */
+
+.auth-caption {
+  margin: 20px 0 0;
+  font-size: 11px;
+  color: white;
+  text-align: center;
+}
+
+/* ===== Desktop-and-up (brand panel + blade only make sense with room to breathe) ===== */
+
+@media (min-width: 760px) {
+  .brand-panel {
+    display: block;
+  }
+}
+
+/* ===== Mobile ===== */
+
+@media (max-width: 759px) {
+  .auth-page {
+    padding: 20px 15px;
+  }
+
+  .auth-card {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
+  .form-panel {
+    padding: 35px 24px;
+  }
+
+  .auth-blade {
+    display: none;
+  }
+
+  .auth-caption {
+    display: none;
+  }
+}
+
+/* ===== Reduced motion ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .submit-button,
+  .field-wrapper {
+    transition: none;
+  }
+}
