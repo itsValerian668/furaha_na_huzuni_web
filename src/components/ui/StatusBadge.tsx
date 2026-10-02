@@ -41,8 +41,6 @@ const STATUS_TONE: Record<string, BadgeTone> = {
 const STATUS_LABEL: Record<string, string> = {
   IN_GOOD_STANDING: 'In Good Standing',
   UNDER_REVIEW: 'Under Review',
-  LOAN_DISBURSEMENT: 'Loan Disbursement',
-  LOAN_REPAYMENT: 'Loan Repayment',
 }
 
 function humanize(value: string): string {

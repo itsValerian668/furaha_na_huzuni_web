@@ -1,8 +1,8 @@
-import { FileText, HandCoins, PieChart, PiggyBank } from 'lucide-react'
+import { FileText, PiggyBank } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-import { Card } from '@/components/ui/Card'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { Card } from '@/components/ui/Card'
 import { currentMember } from '@/data/members'
 import { formatDate } from '@/utils/date'
 
@@ -12,18 +12,6 @@ const STATEMENTS = [
     icon: PiggyBank,
     title: 'Savings Statement',
     description: 'Full history of your savings contributions.',
-  },
-  {
-    to: '/statements/loans',
-    icon: HandCoins,
-    title: 'Loan Statement',
-    description: 'Disbursements, repayments and balances.',
-  },
-  {
-    to: '/statements/shares',
-    icon: PieChart,
-    title: 'Share Statement',
-    description: 'Share purchases and current value.',
   },
 ]
 

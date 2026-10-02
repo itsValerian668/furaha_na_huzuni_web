@@ -13,9 +13,6 @@ const TABS = [
   { value: 'profile', label: 'Cooperative Profile' },
   { value: 'financial', label: 'Financial' },
   { value: 'savings', label: 'Savings Rules' },
-  { value: 'shares', label: 'Shares' },
-  { value: 'loans', label: 'Loans' },
-  { value: 'dividends', label: 'Dividends' },
   { value: 'welfare', label: 'Welfare' },
   { value: 'notifications', label: 'Notifications' },
   { value: 'security', label: 'Security' },
@@ -126,51 +123,6 @@ export function AdminSettingsPage() {
               label="Minimum weekly contribution (TSh)"
               type="number"
               defaultValue={50_000}
-            />
-          </SettingsSection>
-        )}
-
-        {tab === 'shares' && (
-          <SettingsSection onSave={save}>
-            <Input
-              label="Share value (TSh)"
-              type="number"
-              defaultValue={5_000}
-            />
-            <Input
-              label="Minimum shares at registration"
-              type="number"
-              defaultValue={10}
-            />
-          </SettingsSection>
-        )}
-
-        {tab === 'loans' && (
-          <SettingsSection onSave={save}>
-            <Input
-              label="Base interest rate (% p.a.)"
-              type="number"
-              defaultValue={10}
-            />
-            <Input
-              label="Maximum loan-to-savings ratio"
-              type="number"
-              defaultValue={3}
-            />
-          </SettingsSection>
-        )}
-
-        {tab === 'dividends' && (
-          <SettingsSection onSave={save}>
-            <Input
-              label="Reserve before distribution (%)"
-              type="number"
-              defaultValue={20}
-            />
-            <Input
-              label="Minimum membership tenure (months)"
-              type="number"
-              defaultValue={12}
             />
           </SettingsSection>
         )}

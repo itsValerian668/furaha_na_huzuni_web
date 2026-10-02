@@ -1,8 +1,6 @@
 import {
   AlertTriangle,
-  HandCoins,
   Landmark,
-  PieChart,
   PiggyBank,
   Users,
 } from 'lucide-react'
@@ -23,20 +21,19 @@ import {
 
 import { ChartCard } from '@/components/financial/ChartCard'
 import { StatCard } from '@/components/financial/StatCard'
+import { TransactionRow } from '@/components/financial/TransactionRow'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { PageHeader } from '@/components/layout/PageHeader'
 import {
   adminOverview,
-  loanPortfolioSeries,
   memberGrowthSeries,
   profitTrendSeries,
   savingsGrowthSeries,
   systemAlerts,
 } from '@/data/admin'
-import { getMemberTransactions } from '@/data/transactions'
 import { currentMember } from '@/data/members'
-import { TransactionRow } from '@/components/financial/TransactionRow'
+import { getMemberTransactions } from '@/data/transactions'
 import { formatCurrency, formatCurrencyCompact } from '@/utils/currency'
 
 const ALERT_TONE: Record<string, string> = {
@@ -53,7 +50,7 @@ export function AdminDashboardPage() {
     <div>
       <PageHeader
         title="Cooperative Administration"
-        description="Monitor financial performance, members, lending and community activity."
+        description="Monitor financial performance, members and community activity."
         breadcrumbs={[{ label: 'Administration' }]}
       />
 
@@ -65,39 +62,21 @@ export function AdminDashboardPage() {
           icon={Users}
           helperText={`+${adminOverview.newMembersThisMonth} this month`}
         />
+
         <StatCard
           label="Total Savings"
           amount={adminOverview.totalSavings}
           compact
           icon={PiggyBank}
         />
-        <StatCard
-          label="Active Loans"
-          amount={adminOverview.activeLoans}
-          compact
-          icon={HandCoins}
-          tone="neutral"
-        />
-        <StatCard
-          label="Outstanding Loans"
-          amount={adminOverview.outstandingLoans}
-          compact
-          tone="neutral"
-          helperText={`${adminOverview.overdueLoans} overdue`}
-        />
-        <StatCard
-          label="Share Capital"
-          amount={adminOverview.shareCapital}
-          compact
-          icon={PieChart}
-          tone="gold"
-        />
+
         <StatCard
           label="Welfare Fund"
           amount={adminOverview.welfareFund}
           compact
           tone="neutral"
         />
+
         <StatCard
           label="Annual Profit"
           amount={adminOverview.annualProfit}
@@ -105,6 +84,7 @@ export function AdminDashboardPage() {
           icon={Landmark}
           tone="gold"
         />
+
         <StatCard
           label="Missed Contributions"
           amount={adminOverview.missedContributionsThisWeek}
@@ -137,12 +117,14 @@ export function AdminDashboardPage() {
                   <stop offset="100%" stopColor="#0B6655" stopOpacity={0} />
                 </linearGradient>
               </defs>
+
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
                 axisLine={false}
                 tickLine={false}
               />
+
               <Tooltip
                 formatter={(value) => formatCurrency(Number(value))}
                 contentStyle={{
@@ -152,6 +134,7 @@ export function AdminDashboardPage() {
                   fontSize: 13,
                 }}
               />
+
               <Area
                 dataKey="amount"
                 stroke="#0B6655"
@@ -166,9 +149,13 @@ export function AdminDashboardPage() {
 
         <Card className="p-5">
           <p className="text-text mb-3 flex items-center gap-2 text-sm font-semibold">
-            <AlertTriangle className="text-warning size-4" aria-hidden="true" />{' '}
+            <AlertTriangle
+              className="text-warning size-4"
+              aria-hidden="true"
+            />
             System Alerts
           </p>
+
           <div className="flex flex-col gap-2.5">
             {systemAlerts.map((alert) => (
               <div
@@ -182,59 +169,7 @@ export function AdminDashboardPage() {
         </Card>
       </div>
 
-      <div className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <ChartCard
-          title="Loan Portfolio"
-          description="Disbursed vs. repaid, monthly"
-        >
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart
-              data={loanPortfolioSeries}
-              margin={{ left: 4, right: 12, top: 8 }}
-            >
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="var(--border)"
-              />
-              <XAxis
-                dataKey="month"
-                tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <YAxis
-                tickFormatter={(v) => formatCurrencyCompact(v)}
-                tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
-                axisLine={false}
-                tickLine={false}
-                width={70}
-              />
-              <Tooltip
-                formatter={(value) => formatCurrency(Number(value))}
-                contentStyle={{
-                  borderRadius: 12,
-                  border: '1px solid var(--border)',
-                  background: 'var(--surface)',
-                  fontSize: 13,
-                }}
-              />
-              <Bar
-                dataKey="disbursed"
-                fill="#0B6655"
-                radius={[4, 4, 0, 0]}
-                isAnimationActive={false}
-              />
-              <Bar
-                dataKey="repaid"
-                fill="#C9A45C"
-                radius={[4, 4, 0, 0]}
-                isAnimationActive={false}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
+      <div className="mb-6">
         <ChartCard
           title="Member Growth"
           description="Total registered members, monthly"
@@ -249,18 +184,21 @@ export function AdminDashboardPage() {
                 vertical={false}
                 stroke="var(--border)"
               />
+
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
                 axisLine={false}
                 tickLine={false}
               />
+
               <YAxis
                 tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
                 axisLine={false}
                 tickLine={false}
                 width={50}
               />
+
               <Tooltip
                 contentStyle={{
                   borderRadius: 12,
@@ -269,6 +207,7 @@ export function AdminDashboardPage() {
                   fontSize: 13,
                 }}
               />
+
               <Line
                 type="monotone"
                 dataKey="members"
@@ -297,12 +236,14 @@ export function AdminDashboardPage() {
                 vertical={false}
                 stroke="var(--border)"
               />
+
               <XAxis
                 dataKey="year"
                 tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
                 axisLine={false}
                 tickLine={false}
               />
+
               <YAxis
                 tickFormatter={(v) => formatCurrencyCompact(v)}
                 tick={{ fontSize: 11, fill: 'var(--text-muted)' }}
@@ -310,6 +251,7 @@ export function AdminDashboardPage() {
                 tickLine={false}
                 width={70}
               />
+
               <Tooltip
                 formatter={(value) => formatCurrency(Number(value))}
                 contentStyle={{
@@ -319,6 +261,7 @@ export function AdminDashboardPage() {
                   fontSize: 13,
                 }}
               />
+
               <Bar
                 dataKey="profit"
                 fill="#C9A45C"
@@ -330,29 +273,16 @@ export function AdminDashboardPage() {
         </ChartCard>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-        <Card className="p-5">
-          <p className="text-text mb-2 text-sm font-semibold">
-            Pending Loan Approvals
-          </p>
-          <p className="text-text text-3xl font-bold">
-            {adminOverview.pendingLoanApprovals}
-          </p>
-          <Button
-            variant="secondary"
-            className="mt-3 w-full"
-            onClick={() => navigate('/admin/loans')}
-          >
-            Review loans
-          </Button>
-        </Card>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Card className="p-5">
           <p className="text-text mb-2 text-sm font-semibold">
             Pending Member Applications
           </p>
+
           <p className="text-text text-3xl font-bold">
             {adminOverview.pendingMemberApplications}
           </p>
+
           <Button
             variant="secondary"
             className="mt-3 w-full"
@@ -361,13 +291,16 @@ export function AdminDashboardPage() {
             Review members
           </Button>
         </Card>
+
         <Card className="p-5">
           <p className="text-text mb-2 text-sm font-semibold">
             Pending Welfare Requests
           </p>
+
           <p className="text-text text-3xl font-bold">
             {adminOverview.pendingWelfareRequests}
           </p>
+
           <Button
             variant="secondary"
             className="mt-3 w-full"
@@ -380,11 +313,18 @@ export function AdminDashboardPage() {
 
       <Card className="mt-6">
         <div className="flex items-center justify-between px-5 pt-5">
-          <p className="text-text text-sm font-semibold">Recent transactions</p>
-          <Button variant="ghost" onClick={() => navigate('/transactions')}>
+          <p className="text-text text-sm font-semibold">
+            Recent transactions
+          </p>
+
+          <Button
+            variant="ghost"
+            onClick={() => navigate('/transactions')}
+          >
             View all
           </Button>
         </div>
+
         <div className="divide-border divide-y px-5">
           {recentTransactions.map((transaction) => (
             <TransactionRow

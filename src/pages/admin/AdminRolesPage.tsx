@@ -10,9 +10,6 @@ import { cn } from '@/utils/cn'
 const PERMISSION_GROUPS = [
   'Members',
   'Savings',
-  'Shares',
-  'Loans',
-  'Dividends',
   'Welfare',
   'Finance',
   'Reports',
@@ -23,40 +20,28 @@ const PERMISSION_GROUPS = [
 type PermissionGroup = (typeof PERMISSION_GROUPS)[number]
 
 const DEFAULT_ACCESS: Record<Role, PermissionGroup[]> = {
-  MEMBER: ['Savings', 'Shares', 'Loans', 'Dividends', 'Welfare', 'Governance'],
-  LOAN_OFFICER: [
-    'Savings',
-    'Shares',
-    'Loans',
-    'Dividends',
-    'Welfare',
-    'Governance',
-    'Reports',
-    'Members',
-  ],
+  MEMBER: ['Savings', 'Welfare', 'Governance'],
+
   FINANCE_OFFICER: [
     'Savings',
-    'Shares',
-    'Loans',
-    'Dividends',
     'Welfare',
     'Governance',
     'Reports',
     'Members',
     'Finance',
   ],
+
   COOPERATIVE_LEADER: [
     'Savings',
-    'Shares',
-    'Loans',
-    'Dividends',
     'Welfare',
     'Governance',
     'Reports',
     'Members',
     'Finance',
   ],
+
   ADMIN: [...PERMISSION_GROUPS],
+
   SUPER_ADMIN: [...PERMISSION_GROUPS],
 }
 
@@ -71,15 +56,19 @@ export function AdminRolesPage() {
 
   const toggle = (role: Role, group: PermissionGroup) => {
     if (role === 'SUPER_ADMIN') return
+
     setMatrix((current) => {
       const next = { ...current, [role]: new Set(current[role]) }
+
       if (next[role].has(group)) {
         next[role].delete(group)
       } else {
         next[role].add(group)
       }
+
       return next
     })
+
     toast(`${ROLE_LABELS[role]} permissions updated for ${group}.`)
   }
 
@@ -101,6 +90,7 @@ export function AdminRolesPage() {
               <th className="text-text-muted px-4 py-3 text-left text-xs font-semibold tracking-wide uppercase">
                 Permission Group
               </th>
+
               {ROLES.map((role) => (
                 <th
                   key={role}
@@ -111,6 +101,7 @@ export function AdminRolesPage() {
               ))}
             </tr>
           </thead>
+
           <tbody>
             {PERMISSION_GROUPS.map((group) => (
               <tr
@@ -118,8 +109,10 @@ export function AdminRolesPage() {
                 className="border-border border-b last:border-b-0"
               >
                 <td className="text-text px-4 py-3 font-medium">{group}</td>
+
                 {ROLES.map((role) => {
                   const enabled = matrix[role].has(group)
+
                   return (
                     <td key={role} className="px-4 py-3 text-center">
                       <button
@@ -146,6 +139,7 @@ export function AdminRolesPage() {
           </tbody>
         </table>
       </Card>
+
       <p className="text-text-muted mt-3 text-xs">
         Super Admin always has full access and cannot be restricted.
       </p>

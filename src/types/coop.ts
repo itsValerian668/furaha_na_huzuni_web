@@ -1,8 +1,5 @@
-/** Domain types for the cooperative platform. Backed by mock data (src/data/) until a real API exists. */
-
 export type Role =
   | 'MEMBER'
-  | 'LOAN_OFFICER'
   | 'FINANCE_OFFICER'
   | 'COOPERATIVE_LEADER'
   | 'ADMIN'
@@ -10,7 +7,6 @@ export type Role =
 
 export const ROLES: Role[] = [
   'MEMBER',
-  'LOAN_OFFICER',
   'FINANCE_OFFICER',
   'COOPERATIVE_LEADER',
   'ADMIN',
@@ -19,7 +15,6 @@ export const ROLES: Role[] = [
 
 export const ROLE_LABELS: Record<Role, string> = {
   MEMBER: 'Member',
-  LOAN_OFFICER: 'Loan Officer',
   FINANCE_OFFICER: 'Finance Officer',
   COOPERATIVE_LEADER: 'Cooperative Leader',
   ADMIN: 'Admin',
@@ -27,14 +22,17 @@ export const ROLE_LABELS: Record<Role, string> = {
 }
 
 export const ADMIN_ROLES: Role[] = [
-  'LOAN_OFFICER',
   'FINANCE_OFFICER',
   'COOPERATIVE_LEADER',
   'ADMIN',
   'SUPER_ADMIN',
 ]
 
-export type MemberStatus = 'ACTIVE' | 'PENDING' | 'SUSPENDED' | 'INACTIVE'
+export type MemberStatus =
+  | 'ACTIVE'
+  | 'PENDING'
+  | 'SUSPENDED'
+  | 'INACTIVE'
 
 export interface Member {
   id: string
@@ -49,25 +47,21 @@ export interface Member {
   branch: string
   occupation: string
   totalSavings: number
-  totalShares: number
-  shareValue: number
-  outstandingLoan: number
   welfareStatus: 'IN_GOOD_STANDING' | 'ARREARS'
-  nextOfKin: string
   address: string
 }
 
 export type TransactionType =
   | 'SAVINGS'
-  | 'SHARE'
-  | 'LOAN_DISBURSEMENT'
-  | 'LOAN_REPAYMENT'
-  | 'DIVIDEND'
   | 'WELFARE'
   | 'FEE'
   | 'ADJUSTMENT'
 
-export type TransactionStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REVERSED'
+export type TransactionStatus =
+  | 'COMPLETED'
+  | 'PENDING'
+  | 'FAILED'
+  | 'REVERSED'
 
 export interface Transaction {
   id: string
@@ -99,74 +93,6 @@ export interface SavingsContribution {
   cycle: string
 }
 
-export interface SharePurchase {
-  id: string
-  date: string
-  shares: number
-  amount: number
-  status: 'CONFIRMED' | 'PENDING'
-}
-
-export type LoanType =
-  | 'Emergency Loan'
-  | 'Business Loan'
-  | 'Education Loan'
-  | 'Development Loan'
-  | 'Event Support Loan'
-
-export type LoanStatus =
-  | 'PENDING'
-  | 'UNDER_REVIEW'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'DISBURSED'
-  | 'ACTIVE'
-  | 'OVERDUE'
-  | 'COMPLETED'
-
-export interface LoanInstallment {
-  id: string
-  dueDate: string
-  amount: number
-  principal: number
-  interest: number
-  status: 'PAID' | 'DUE' | 'UPCOMING' | 'OVERDUE'
-  paidOn?: string
-}
-
-export interface Loan {
-  id: string
-  reference: string
-  memberId: string
-  memberName: string
-  type: LoanType
-  purpose: string
-  principal: number
-  interestRate: number
-  termMonths: number
-  outstandingBalance: number
-  monthlyPayment: number
-  status: LoanStatus
-  appliedOn: string
-  approvedOn?: string
-  disbursedOn?: string
-  nextPaymentDate?: string
-  installments: LoanInstallment[]
-}
-
-export interface DividendRecord {
-  id: string
-  year: number
-  cooperativeProfit: number
-  dividendPool: number
-  eligibleMembers: number
-  personalDividend: number
-  sharesHeld: number
-  status: 'CALCULATED' | 'APPROVED' | 'PAID'
-  paidOn?: string
-  distributionRate: number
-}
-
 export type WelfareCategory =
   | 'Medical'
   | 'Bereavement'
@@ -184,7 +110,12 @@ export interface WelfareRequest {
   amountRequested: number
   amountApproved?: number
   reason: string
-  status: 'PENDING' | 'UNDER_REVIEW' | 'APPROVED' | 'REJECTED' | 'DISBURSED'
+  status:
+    | 'PENDING'
+    | 'UNDER_REVIEW'
+    | 'APPROVED'
+    | 'REJECTED'
+    | 'DISBURSED'
   submittedOn: string
   decidedOn?: string
 }
@@ -197,7 +128,10 @@ export interface WelfareContribution {
 }
 
 export type NotificationCategory =
-  'Financial' | 'Loan' | 'Savings' | 'Community' | 'System'
+  | 'Financial'
+  | 'Savings'
+  | 'Community'
+  | 'System'
 
 export interface AppNotification {
   id: string
@@ -227,6 +161,19 @@ export interface Meeting {
   attendance?: number
   minutesAvailable: boolean
   agenda: string[]
+
+  /**
+   * Global pin:
+   * When true, the meeting is pinned for everyone.
+   */
+  globalPinned?: boolean
+
+  /**
+   * Personal pins:
+   * Contains the numeric IDs of members who personally pinned
+   * this meeting.
+   */
+  personalPinnedBy?: number[]
 }
 
 export interface ElectionCandidate {
@@ -247,11 +194,29 @@ export interface ElectionPosition {
 export interface CooperativeEvent {
   id: string
   title: string
-  type: 'Meeting' | 'Savings' | 'Training' | 'Community' | 'Election'
+  type:
+    | 'Meeting'
+    | 'Savings'
+    | 'Training'
+    | 'Community'
+    | 'Election'
   date: string
   time: string
   location: string
   description: string
+
+  /**
+   * Global pin:
+   * When true, the event is pinned for everyone.
+   */
+  globalPinned?: boolean
+
+  /**
+   * Personal pins:
+   * Contains the numeric IDs of members who personally pinned
+   * this event.
+   */
+  personalPinnedBy?: number[]
 }
 
 export interface AuditLogEntry {
