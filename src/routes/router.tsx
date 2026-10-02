@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter } from 'react-router-dom'
 
 import { AuthPage } from '@/features/auth/pages/AuthPage'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
+
 import { AuthLayout } from '@/layouts/AuthLayout'
 import { DashboardLayout } from '@/layouts/DashboardLayout'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -38,10 +39,12 @@ import { AdminMemberDetailPage } from '@/pages/admin/AdminMemberDetailPage'
 import { AdminSavingsPage } from '@/pages/admin/AdminSavingsPage'
 import { AdminWelfarePage } from '@/pages/admin/AdminWelfarePage'
 import { AdminFinancePage } from '@/pages/admin/AdminFinancePage'
+
 import { AdminReportsIndexPage } from '@/pages/admin/reports/AdminReportsIndexPage'
 import { AdminReportsSavingsPage } from '@/pages/admin/reports/AdminReportsSavingsPage'
 import { AdminReportsMembersPage } from '@/pages/admin/reports/AdminReportsMembersPage'
 import { AdminReportsFinancialPage } from '@/pages/admin/reports/AdminReportsFinancialPage'
+
 import { AdminAuditPage } from '@/pages/admin/AdminAuditPage'
 import { AdminRolesPage } from '@/pages/admin/AdminRolesPage'
 import { AdminSettingsPage } from '@/pages/admin/AdminSettingsPage'
@@ -52,22 +55,43 @@ import { AdminEventsPage } from '@/pages/admin/AdminEventsPage'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 
 export const router = createBrowserRouter([
+  
   {
     element: <AuthLayout />,
-    children: [{ path: '/login', element: <AuthPage /> }],
+    children: [
+      {
+        path: '/login',
+        element: <AuthPage />,
+      },
+    ],
   },
 
+ 
   {
     element: <ProtectedRoute />,
     children: [
       {
         element: <DashboardLayout />,
         children: [
-          { index: true, element: <Navigate to="/dashboard" replace /> },
+          /*
+           * Default route
+           */
+          {
+            index: true,
+            element: <Navigate to="/dashboard" replace />,
+          },
 
-          { path: '/dashboard', element: <DashboardPage /> },
+        
+          {
+            path: '/dashboard',
+            element: <DashboardPage />,
+          },
 
-          { path: '/savings', element: <SavingsPage /> },
+        
+          {
+            path: '/savings',
+            element: <SavingsPage />,
+          },
           {
             path: '/savings/history',
             element: <SavingsHistoryPage />,
@@ -81,7 +105,10 @@ export const router = createBrowserRouter([
             element: <SavingsContributionsPage />,
           },
 
-          { path: '/welfare', element: <WelfarePage /> },
+          {
+            path: '/welfare',
+            element: <WelfarePage />,
+          },
           {
             path: '/welfare/requests',
             element: <WelfareRequestsPage />,
@@ -91,11 +118,13 @@ export const router = createBrowserRouter([
             element: <WelfareHistoryPage />,
           },
 
+          
           {
             path: '/transactions',
             element: <TransactionsPage />,
           },
 
+         
           {
             path: '/statements',
             element: <StatementsPage />,
@@ -105,16 +134,23 @@ export const router = createBrowserRouter([
             element: <StatementsSavingsPage />,
           },
 
+         
           {
             path: '/profile',
             element: <ProfilePage />,
           },
+
+         
           {
             path: '/notifications',
             element: <NotificationsPage />,
           },
 
-          { path: '/governance', element: <GovernancePage /> },
+          
+          {
+            path: '/governance',
+            element: <GovernancePage />,
+          },
           {
             path: '/governance/constitution',
             element: <ConstitutionPage />,
@@ -136,11 +172,10 @@ export const router = createBrowserRouter([
             element: <ResolutionsPage />,
           },
 
-          { path: '/events', element: <EventsPage /> },
-
+          
           {
-            path: '/admin',
-            element: <AdminDashboardPage />,
+            path: '/events',
+            element: <EventsPage />,
           },
 
           {
@@ -154,6 +189,13 @@ export const router = createBrowserRouter([
               />
             ),
             children: [
+             
+              {
+                path: '/admin',
+                element: <AdminDashboardPage />,
+              },
+
+              
               {
                 path: '/admin/members',
                 element: <AdminMembersPage />,
@@ -162,66 +204,85 @@ export const router = createBrowserRouter([
                 path: '/admin/members/:id',
                 element: <AdminMemberDetailPage />,
               },
+
+              
+              {
+                path: '/admin/leaders',
+                element: <AdminLeadersPage />,
+              },
+
+              {
+                path: '/admin/meetings',
+                element: <AdminMeetingsPage />,
+              },
+
+              
               {
                 path: '/admin/events',
                 element: <AdminEventsPage />,
               },
-            ],
-          },
 
-          {
-            path: '/admin/leaders',
-            element: <AdminLeadersPage />,
-          },
-          {
-            path: '/admin/meetings',
-            element: <AdminMeetingsPage />,
-          },
-          {
-            path: '/admin/savings',
-            element: <AdminSavingsPage />,
-          },
-          {
-            path: '/admin/welfare',
-            element: <AdminWelfarePage />,
-          },
-          {
-            path: '/admin/finance',
-            element: <AdminFinancePage />,
-          },
-          {
-            path: '/admin/reports',
-            element: <AdminReportsIndexPage />,
-          },
-          {
-            path: '/admin/reports/savings',
-            element: <AdminReportsSavingsPage />,
-          },
-          {
-            path: '/admin/reports/members',
-            element: <AdminReportsMembersPage />,
-          },
-          {
-            path: '/admin/reports/financial',
-            element: <AdminReportsFinancialPage />,
-          },
-          {
-            path: '/admin/audit',
-            element: <AdminAuditPage />,
-          },
-          {
-            path: '/admin/roles',
-            element: <AdminRolesPage />,
-          },
-          {
-            path: '/admin/settings',
-            element: <AdminSettingsPage />,
+             
+              {
+                path: '/admin/savings',
+                element: <AdminSavingsPage />,
+              },
+
+              
+              {
+                path: '/admin/welfare',
+                element: <AdminWelfarePage />,
+              },
+
+              
+              {
+                path: '/admin/finance',
+                element: <AdminFinancePage />,
+              },
+
+              
+              {
+                path: '/admin/reports',
+                element: <AdminReportsIndexPage />,
+              },
+              {
+                path: '/admin/reports/savings',
+                element: <AdminReportsSavingsPage />,
+              },
+              {
+                path: '/admin/reports/members',
+                element: <AdminReportsMembersPage />,
+              },
+              {
+                path: '/admin/reports/financial',
+                element: <AdminReportsFinancialPage />,
+              },
+
+              
+              {
+                path: '/admin/audit',
+                element: <AdminAuditPage />,
+              },
+
+              
+              {
+                path: '/admin/roles',
+                element: <AdminRolesPage />,
+              },
+
+             
+              {
+                path: '/admin/settings',
+                element: <AdminSettingsPage />,
+              },
+            ],
           },
         ],
       },
     ],
   },
 
+  
   {
     path: '*',
     element: <NotFoundPage />,

@@ -6,12 +6,14 @@ import { Button } from '@/components/ui/Button'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { SectionTabs } from '@/components/layout/SectionTabs'
-import { welfareRequests } from '@/data/welfare'
+import { useWelfareStore } from '@/stores/welfare.store'
 import { formatCurrency } from '@/utils/currency'
 import { formatDate } from '@/utils/date'
 
 export function WelfareRequestsPage() {
   const [modalOpen, setModalOpen] = useState(false)
+
+  const requests = useWelfareStore((state) => state.requests)
 
   return (
     <div>
@@ -23,9 +25,12 @@ export function WelfareRequestsPage() {
           { label: 'Requests' },
         ]}
         actions={
-          <Button onClick={() => setModalOpen(true)}>Request Support</Button>
+          <Button onClick={() => setModalOpen(true)}>
+            Request Support
+          </Button>
         }
       />
+
       <SectionTabs
         items={[
           { label: 'Overview', to: '/welfare', end: true },
@@ -35,9 +40,13 @@ export function WelfareRequestsPage() {
       />
 
       <DataTable
-        data={welfareRequests}
+        data={requests}
         keyField={(row) => row.id}
-        searchFields={(row) => [row.reference, row.memberName, row.category]}
+        searchFields={(row) => [
+          row.reference,
+          row.memberName,
+          row.category,
+        ]}
         searchPlaceholder="Search by member or category…"
         columns={[
           {
@@ -45,8 +54,12 @@ export function WelfareRequestsPage() {
             header: 'Member',
             render: (row) => (
               <div>
-                <p className="text-text font-medium">{row.memberName}</p>
-                <p className="text-text-muted text-xs">{row.reference}</p>
+                <p className="text-text font-medium">
+                  {row.memberName}
+                </p>
+                <p className="text-text-muted text-xs">
+                  {row.reference}
+                </p>
               </div>
             ),
           },
@@ -71,7 +84,9 @@ export function WelfareRequestsPage() {
             align: 'right',
             render: (row) => (
               <span className="text-text font-semibold">
-                {formatCurrency(row.amountApproved ?? row.amountRequested)}
+                {formatCurrency(
+                  row.amountApproved ?? row.amountRequested,
+                )}
               </span>
             ),
           },

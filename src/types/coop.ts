@@ -118,6 +118,13 @@ export interface WelfareRequest {
     | 'DISBURSED'
   submittedOn: string
   decidedOn?: string
+
+  supportingDocument?: {
+    name: string
+    type: string
+    size: number
+    dataUrl: string
+  }
 }
 
 export interface WelfareContribution {
