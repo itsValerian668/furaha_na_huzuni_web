@@ -305,6 +305,6 @@ export function AdminWelfarePage() {
           confirm?.action === 'approve' ? 'primary' : 'danger'
         }
       />
-    </div>git 
+    </div>
   )
 }
