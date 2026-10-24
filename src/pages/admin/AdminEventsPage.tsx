@@ -1,4 +1,5 @@
 import {
+  CalendarClock,
   Edit,
   MapPin,
   Pin,
@@ -8,6 +9,7 @@ import {
 import { useState } from 'react'
 
 import { PageHeader } from '@/components/layout/PageHeader'
+import { RescheduleModal } from '@/components/common/RescheduleModal'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
@@ -64,6 +66,8 @@ export function AdminEventsPage() {
 
   const [modalOpen, setModalOpen] = useState(false)
   const [editingEvent, setEditingEvent] =
+    useState<CooperativeEvent | null>(null)
+  const [reschedulingEvent, setReschedulingEvent] =
     useState<CooperativeEvent | null>(null)
   const [form, setForm] =
     useState<EventForm>(EMPTY_FORM)
@@ -187,6 +191,16 @@ export function AdminEventsPage() {
     toast('Event deleted.')
   }
 
+  function handleReschedule(date: string, time?: string) {
+    if (!reschedulingEvent || time === undefined) {
+      return
+    }
+
+    updateEvent(reschedulingEvent.id, { date, time })
+    toast('Event rescheduled successfully.')
+    setReschedulingEvent(null)
+  }
+
   return (
     <div>
       <PageHeader
@@ -267,6 +281,15 @@ export function AdminEventsPage() {
                 </div>
 
                 <div className="flex shrink-0 items-center gap-1">
+                  <Button
+                    variant="secondary"
+                    className="px-3 py-2"
+                    onClick={() => setReschedulingEvent(event)}
+                  >
+                    <CalendarClock className="size-4" aria-hidden="true" />
+                    Reschedule
+                  </Button>
+
                   {/* Global pin */}
                   <button
                     type="button"
@@ -464,6 +487,15 @@ export function AdminEventsPage() {
           </label>
         </div>
       </Modal>
+      <RescheduleModal
+        key={`${reschedulingEvent?.id ?? 'closed'}-${reschedulingEvent?.date ?? ''}-${reschedulingEvent?.time ?? ''}`}
+        open={reschedulingEvent !== null}
+        title={reschedulingEvent?.title ?? 'event'}
+        date={reschedulingEvent?.date ?? ''}
+        time={reschedulingEvent?.time ?? ''}
+        onClose={() => setReschedulingEvent(null)}
+        onSave={handleReschedule}
+      />
     </div>
   )
 }

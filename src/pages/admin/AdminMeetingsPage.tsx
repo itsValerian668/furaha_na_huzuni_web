@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Edit, Pin, Plus, Trash2 } from 'lucide-react'
+import { CalendarClock, Edit, Pin, Plus, Trash2 } from 'lucide-react'
 
+import { RescheduleModal } from '@/components/common/RescheduleModal'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { useMeetingsStore } from '@/stores/meetings.store'
+import { toast } from '@/stores/toast.store'
 import type { Meeting } from '@/types/coop'
 import { formatDate } from '@/utils/date'
 
@@ -28,6 +30,8 @@ export function AdminMeetingsPage() {
 
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [reschedulingMeeting, setReschedulingMeeting] =
+    useState<Meeting | null>(null)
 
   const [title, setTitle] = useState('')
   const [type, setType] = useState<Meeting['type']>('Regular')
@@ -62,7 +66,7 @@ export function AdminMeetingsPage() {
       type,
       date,
       location: location.trim(),
-      status: 'UPCOMING' as const,
+      status: getMeetingStatus(date),
       minutesAvailable: false,
       agenda: agenda
         .split('\n')
@@ -74,7 +78,7 @@ export function AdminMeetingsPage() {
       updateMeeting(editingId, meetingData)
     } else {
       addMeeting({
-        id: `MT-${Date.now()}`,
+        id: `MT-${crypto.randomUUID()}`,
         ...meetingData,
         globalPinned: false,
         personalPinnedBy: [],
@@ -104,6 +108,27 @@ export function AdminMeetingsPage() {
     }
   }
 
+  function handleReschedule(date: string) {
+    if (!reschedulingMeeting) {
+      return
+    }
+
+    updateMeeting(reschedulingMeeting.id, {
+      date,
+      status: getMeetingStatus(date),
+    })
+    toast('Meeting rescheduled successfully.')
+    setReschedulingMeeting(null)
+  }
+
+  function getMeetingStatus(date: string): Meeting['status'] {
+    const scheduledDate = new Date(`${date}T00:00:00`)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    return scheduledDate < today ? 'PAST' : 'UPCOMING'
+  }
+
   const upcomingMeetings = meetings
     .filter((meeting) => meeting.status === 'UPCOMING')
     .sort(
@@ -123,6 +148,15 @@ export function AdminMeetingsPage() {
   function MeetingActions({ meeting }: { meeting: Meeting }) {
     return (
       <div className="flex shrink-0 items-start gap-1">
+        <Button
+          variant="secondary"
+          className="px-3 py-2"
+          onClick={() => setReschedulingMeeting(meeting)}
+        >
+          <CalendarClock size={16} aria-hidden="true" />
+          Reschedule
+        </Button>
+
         <button
           type="button"
           onClick={() => toggleGlobalPin(meeting.id)}
@@ -404,6 +438,15 @@ export function AdminMeetingsPage() {
           </div>
         </section>
       </div>
+
+      <RescheduleModal
+        key={`${reschedulingMeeting?.id ?? 'closed'}-${reschedulingMeeting?.date ?? ''}`}
+        open={reschedulingMeeting !== null}
+        title={reschedulingMeeting?.title ?? 'meeting'}
+        date={reschedulingMeeting?.date ?? ''}
+        onClose={() => setReschedulingMeeting(null)}
+        onSave={handleReschedule}
+      />
     </div>
   )
 }
