@@ -1,18 +1,21 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { AddMemberModal } from '@/components/members/AddMemberModal'
 import { DataTable } from '@/components/tables/DataTable'
 import { MemberAvatar } from '@/components/layout/MemberAvatar'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
+import { ConfirmModal } from '@/components/ui/ConfirmModal'
 import { Dropdown, DropdownItem } from '@/components/ui/Dropdown'
 import { Select } from '@/components/ui/Select'
 import { StatusBadge } from '@/components/ui/StatusBadge'
-import { MoreHorizontal } from 'lucide-react'
-import { members } from '@/data/members'
+import { MoreHorizontal, Plus } from 'lucide-react'
+import { useMembersStore } from '@/stores/members.store'
 import { toast } from '@/stores/toast.store'
 import { formatCurrency } from '@/utils/currency'
 import { formatDate } from '@/utils/date'
+import type { Member } from '@/types/coop'
 
 const STATUS_OPTIONS = [
   { value: 'ALL', label: 'All statuses' },
@@ -24,22 +27,63 @@ const STATUS_OPTIONS = [
 
 export function AdminMembersPage() {
   const navigate = useNavigate()
+
   const [status, setStatus] = useState('ALL')
+  const [addMemberOpen, setAddMemberOpen] = useState(false)
+  const [statusActionMember, setStatusActionMember] =
+    useState<Member | null>(null)
+
+  const members = useMembersStore((state) => state.members)
+
+  const updateMemberStatus = useMembersStore(
+    (state) => state.updateMemberStatus,
+  )
 
   const filtered =
     status === 'ALL'
       ? members
       : members.filter((member) => member.status === status)
 
+  const isSuspendedOrInactive =
+    statusActionMember?.status === 'SUSPENDED' ||
+    statusActionMember?.status === 'INACTIVE'
+
+  const handleStatusConfirm = () => {
+    if (!statusActionMember) return
+
+    const newStatus = isSuspendedOrInactive
+      ? 'ACTIVE'
+      : 'SUSPENDED'
+
+    updateMemberStatus(statusActionMember.id, newStatus)
+
+    if (newStatus === 'ACTIVE') {
+      toast(`${statusActionMember.name} activated.`)
+    } else {
+      toast(
+        `${statusActionMember.name} suspended.`,
+        'error',
+      )
+    }
+
+    setStatusActionMember(null)
+  }
+
   return (
     <div>
       <PageHeader
         title="Member Management"
-        description="View, verify and manage cooperative members."
+        description="Register, view, edit, and manage cooperative members."
         breadcrumbs={[
           { label: 'Administration', to: '/admin' },
           { label: 'Members' },
         ]}
+        actions={
+          <Button onClick={() => setAddMemberOpen(true)}>
+            <Plus className="size-4" aria-hidden="true" />
+            Add Member
+          </Button>
+        }
       />
 
       <DataTable
@@ -70,7 +114,10 @@ export function AdminMembersPage() {
                 aria-label="Row actions"
                 className="text-text-muted hover:bg-surface-hover rounded-md p-1.5"
               >
-                <MoreHorizontal className="size-4" aria-hidden="true" />
+                <MoreHorizontal
+                  className="size-4"
+                  aria-hidden="true"
+                />
               </button>
             )}
           >
@@ -82,20 +129,23 @@ export function AdminMembersPage() {
                     close()
                   }}
                 >
-                  View Financial Profile
+                  View Profile
                 </DropdownItem>
+
                 <DropdownItem
                   onClick={() => {
-                    toast(`${row.name}'s profile opened for editing.`)
+                    navigate(`/admin/members/${row.id}`)
                     close()
                   }}
                 >
                   Edit
                 </DropdownItem>
-                {row.status === 'SUSPENDED' ? (
+
+                {row.status === 'SUSPENDED' ||
+                row.status === 'INACTIVE' ? (
                   <DropdownItem
                     onClick={() => {
-                      toast(`${row.name} reactivated.`)
+                      setStatusActionMember(row)
                       close()
                     }}
                   >
@@ -105,7 +155,7 @@ export function AdminMembersPage() {
                   <DropdownItem
                     danger
                     onClick={() => {
-                      toast(`${row.name} suspended.`, 'error')
+                      setStatusActionMember(row)
                       close()
                     }}
                   >
@@ -123,7 +173,9 @@ export function AdminMembersPage() {
             render: (row) => (
               <button
                 type="button"
-                onClick={() => navigate(`/admin/members/${row.id}`)}
+                onClick={() =>
+                  navigate(`/admin/members/${row.id}`)
+                }
                 className="flex items-center gap-2.5 text-left"
               >
                 <MemberAvatar
@@ -131,10 +183,12 @@ export function AdminMembersPage() {
                   color={row.avatarColor}
                   size={32}
                 />
+
                 <span>
                   <span className="text-text block font-medium">
                     {row.name}
                   </span>
+
                   <span className="text-text-muted block text-xs">
                     {row.memberNumber}
                   </span>
@@ -142,7 +196,11 @@ export function AdminMembersPage() {
               </button>
             ),
           },
-          { key: 'branch', header: 'Branch', render: (row) => row.branch },
+          {
+            key: 'branch',
+            header: 'Branch',
+            render: (row) => row.branch,
+          },
           {
             key: 'joined',
             header: 'Joined',
@@ -151,23 +209,16 @@ export function AdminMembersPage() {
           {
             key: 'status',
             header: 'Status',
-            render: (row) => <StatusBadge status={row.status} />,
+            render: (row) => (
+              <StatusBadge status={row.status} />
+            ),
           },
           {
             key: 'savings',
             header: 'Savings',
             align: 'right',
-            render: (row) => formatCurrency(row.totalSavings),
-          },
-          {
-            key: 'loan',
-            header: 'Loan',
-            align: 'right',
-            render: (row) => (
-              <span className="text-text font-semibold">
-                {formatCurrency(row.outstandingLoan)}
-              </span>
-            ),
+            render: (row) =>
+              formatCurrency(row.totalSavings),
           },
         ]}
         toolbar={
@@ -179,6 +230,37 @@ export function AdminMembersPage() {
           </Button>
         }
       />
+
+      <AddMemberModal
+        open={addMemberOpen}
+        onClose={() => setAddMemberOpen(false)}
+      />
+
+      {statusActionMember && (
+        <ConfirmModal
+          open
+          onClose={() => setStatusActionMember(null)}
+          onConfirm={handleStatusConfirm}
+          title={
+            isSuspendedOrInactive
+              ? 'Activate member?'
+              : 'Suspend member?'
+          }
+          description={
+            isSuspendedOrInactive
+              ? `Are you sure you want to activate ${statusActionMember.name}?`
+              : `Are you sure you want to suspend ${statusActionMember.name}?`
+          }
+          confirmLabel={
+            isSuspendedOrInactive
+              ? 'Activate Member'
+              : 'Suspend Member'
+          }
+          variant={
+            isSuspendedOrInactive ? 'primary' : 'danger'
+          }
+        />
+      )}
     </div>
   )
 }

@@ -1,8 +1,8 @@
-import { BarChart3, Gift, HandCoins, PiggyBank, Users } from 'lucide-react'
+import { BarChart3, PiggyBank, Users } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-import { Card } from '@/components/ui/Card'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { Card } from '@/components/ui/Card'
 
 const REPORTS = [
   {
@@ -18,22 +18,10 @@ const REPORTS = [
     description: 'Contribution trends and active savers.',
   },
   {
-    to: '/admin/reports/loans',
-    icon: HandCoins,
-    title: 'Loan Report',
-    description: 'Portfolio, repayment and overdue analysis.',
-  },
-  {
     to: '/admin/reports/members',
     icon: Users,
     title: 'Member Report',
     description: 'Growth, status and branch distribution.',
-  },
-  {
-    to: '/admin/reports/dividends',
-    icon: Gift,
-    title: 'Dividend Report',
-    description: 'Distribution history and projections.',
   },
 ]
 

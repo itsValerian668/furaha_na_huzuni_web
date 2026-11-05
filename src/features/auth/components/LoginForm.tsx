@@ -55,7 +55,7 @@ export function LoginForm({
       <div className="form-heading">
         <span className="form-kicker">MEMBER PORTAL</span>
         <h2>Welcome back.</h2>
-        <p>Sign in to manage your savings, loans and cooperative account.</p>
+        <p>Sign in to manage your savings and cooperative account.</p>
       </div>
 
       {login.isError && !isValidationError(login.error) && (

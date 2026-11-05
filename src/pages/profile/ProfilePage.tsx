@@ -46,6 +46,7 @@ export function ProfilePage() {
             color={currentMember.avatarColor}
             size={72}
           />
+
           <button
             type="button"
             onClick={() => toast('Profile photo updated.')}
@@ -55,13 +56,16 @@ export function ProfilePage() {
             <Camera className="size-3.5" aria-hidden="true" />
           </button>
         </div>
+
         <div className="flex-1">
           <p className="text-text text-lg font-bold">
             {user?.name ?? currentMember.name}
           </p>
+
           <p className="text-text-muted text-sm">
             {currentMember.memberNumber} · {currentMember.branch}
           </p>
+
           <div className="mt-2 flex flex-wrap justify-center gap-2 sm:justify-start">
             <StatusBadge status={currentMember.status} />
             <StatusBadge status={currentMember.welfareStatus} />
@@ -78,14 +82,22 @@ export function ProfilePage() {
               label="Full name"
               defaultValue={user?.name ?? currentMember.name}
             />
+
             <Input
               label="Email"
               type="email"
               defaultValue={user?.email ?? currentMember.email}
             />
+
             <Input label="Phone" defaultValue={currentMember.phone} />
+
             <Input label="Address" defaultValue={currentMember.address} />
-            <Input label="Occupation" defaultValue={currentMember.occupation} />
+
+            <Input
+              label="Occupation"
+              defaultValue={currentMember.occupation}
+            />
+
             <div className="sm:col-span-2">
               <Button onClick={() => toast('Profile updated successfully.')}>
                 Save changes
@@ -103,30 +115,35 @@ export function ProfilePage() {
                   {currentMember.memberNumber}
                 </dd>
               </div>
+
               <div>
                 <dt className="text-text-muted text-xs">Membership Date</dt>
                 <dd className="text-text text-sm font-semibold">
                   {formatDate(currentMember.joinedOn)}
                 </dd>
               </div>
+
               <div>
                 <dt className="text-text-muted text-xs">Member Status</dt>
                 <dd>
                   <StatusBadge status={currentMember.status} />
                 </dd>
               </div>
+
               <div>
                 <dt className="text-text-muted text-xs">Branch</dt>
                 <dd className="text-text text-sm font-semibold">
                   {currentMember.branch}
                 </dd>
               </div>
+
               <div>
                 <dt className="text-text-muted text-xs">Role</dt>
                 <dd className="text-text text-sm font-semibold">
                   {currentMember.role.replace('_', ' ')}
                 </dd>
               </div>
+
               <div>
                 <dt className="text-text-muted text-xs">Welfare Standing</dt>
                 <dd>
@@ -139,34 +156,18 @@ export function ProfilePage() {
 
         {tab === 'financial' && (
           <Card className="p-6">
-            <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <dt className="text-text-muted text-xs">Savings</dt>
+                <dt className="text-text-muted text-xs">Total Savings</dt>
                 <dd className="text-text text-sm font-semibold">
                   {formatCurrency(currentMember.totalSavings)}
                 </dd>
               </div>
+
               <div>
-                <dt className="text-text-muted text-xs">Shares</dt>
-                <dd className="text-text text-sm font-semibold">
-                  {currentMember.totalShares} ·{' '}
-                  {formatCurrency(currentMember.shareValue)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-text-muted text-xs">Outstanding Loan</dt>
-                <dd className="text-text text-sm font-semibold">
-                  {formatCurrency(currentMember.outstandingLoan)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-text-muted text-xs">Loan Status</dt>
+                <dt className="text-text-muted text-xs">Welfare Status</dt>
                 <dd>
-                  <StatusBadge
-                    status={
-                      currentMember.outstandingLoan > 0 ? 'ACTIVE' : 'COMPLETED'
-                    }
-                  />
+                  <StatusBadge status={currentMember.welfareStatus} />
                 </dd>
               </div>
             </dl>
@@ -178,13 +179,8 @@ export function ProfilePage() {
             <p className="text-text mb-3 text-sm font-semibold">
               Next of kin & emergency contact
             </p>
+
             <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <dt className="text-text-muted text-xs">Next of Kin</dt>
-                <dd className="text-text text-sm font-semibold">
-                  {currentMember.nextOfKin}
-                </dd>
-              </div>
               <div>
                 <dt className="text-text-muted text-xs">Emergency Contact</dt>
                 <dd className="text-text text-sm font-semibold">
@@ -211,12 +207,17 @@ export function ProfilePage() {
                     className="text-text-muted size-4"
                     aria-hidden="true"
                   />
-                  <span className="text-text text-sm font-medium">{doc}</span>
+
+                  <span className="text-text text-sm font-medium">
+                    {doc}
+                  </span>
+
                   <CheckCircle2
                     className="text-positive size-3.5"
                     aria-hidden="true"
                   />
                 </div>
+
                 <Button
                   variant="ghost"
                   onClick={() => toast(`${doc} downloaded.`)}
@@ -239,10 +240,12 @@ export function ProfilePage() {
                   <p className="text-text text-sm font-medium">
                     {item.description}
                   </p>
+
                   <p className="text-text-muted text-xs">
                     {formatDateTime(item.date)}
                   </p>
                 </div>
+
                 <span className="text-text text-sm font-semibold">
                   {formatCurrency(item.amount)}
                 </span>
@@ -255,10 +258,12 @@ export function ProfilePage() {
           <Card className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-text text-sm font-semibold">Appearance</p>
+
               <p className="text-text-muted text-xs">
                 Choose how Furaha na Huzuni looks on this device.
               </p>
             </div>
+
             <ThemeToggle />
           </Card>
         )}

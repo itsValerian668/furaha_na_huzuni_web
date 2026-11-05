@@ -11,10 +11,17 @@ import {
 import { ChartCard } from '@/components/financial/ChartCard'
 import { ReportShell } from '@/components/financial/ReportShell'
 import { Card } from '@/components/ui/Card'
-import { financialSummary, incomeExpenseSeries } from '@/data/admin'
+import { incomeExpenseSeries } from '@/data/admin'
+import {
+  calculateFinancialSummary,
+  useFinanceStore,
+} from '@/stores/finance.store'
 import { formatCurrency, formatCurrencyCompact } from '@/utils/currency'
 
 export function AdminReportsFinancialPage() {
+  const expenses = useFinanceStore((state) => state.expenses)
+  const summary = calculateFinancialSummary(expenses)
+
   return (
     <ReportShell
       title="Financial Report"
@@ -25,16 +32,16 @@ export function AdminReportsFinancialPage() {
         { label: 'Financial' },
       ]}
       stats={[
-        { label: 'Revenue', amount: financialSummary.revenue, compact: true },
-        { label: 'Expenses', amount: financialSummary.expenses, compact: true },
+        { label: 'Revenue', amount: summary.revenue, compact: true },
+        { label: 'Expenses', amount: summary.expenses, compact: true },
         {
           label: 'Net Profit',
-          amount: financialSummary.netProfit,
+          amount: summary.netProfit,
           compact: true,
         },
         {
           label: 'Cash Position',
-          amount: financialSummary.cashPosition,
+          amount: summary.cashPosition,
           compact: true,
         },
       ]}
@@ -100,19 +107,19 @@ export function AdminReportsFinancialPage() {
           <div>
             <dt className="text-text-muted text-xs">Assets</dt>
             <dd className="text-text text-lg font-bold">
-              {formatCurrency(financialSummary.assets)}
+              {formatCurrency(summary.assets)}
             </dd>
           </div>
           <div>
             <dt className="text-text-muted text-xs">Liabilities</dt>
             <dd className="text-text text-lg font-bold">
-              {formatCurrency(financialSummary.liabilities)}
+              {formatCurrency(summary.liabilities)}
             </dd>
           </div>
           <div>
             <dt className="text-text-muted text-xs">Capital</dt>
             <dd className="text-text text-lg font-bold">
-              {formatCurrency(financialSummary.capital)}
+              {formatCurrency(summary.capital)}
             </dd>
           </div>
         </dl>

@@ -13,12 +13,12 @@ export const BRAND_COPY: Record<AuthMode, BrandCopy> = {
     kicker: 'MEMBER OWNED · COMMUNITY DRIVEN',
     heading: 'Together we',
     accent: 'build wealth.',
-    body: 'Save together, support one another, access affordable credit and share the value we create.',
+    body: 'Save together and support one another through mutual cooperation.',
   },
   signup: {
     kicker: 'JOIN THE COOPERATIVE',
     heading: 'Start your',
     accent: 'savings journey.',
-    body: 'One membership for savings, shares, affordable loans, dividends and mutual support.',
+    body: 'One membership for savings and mutual support.',
   },
 }

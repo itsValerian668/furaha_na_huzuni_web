@@ -30,7 +30,7 @@ export function Topbar() {
         >
           <Search className="size-4 shrink-0" aria-hidden="true" />
           <span className="hidden truncate sm:inline-block">
-            Search members, loans, transactions…
+            Search members, transactions…
           </span>
           <span className="truncate sm:hidden">Search…</span>
           <kbd className="border-border bg-surface text-text-muted ml-auto hidden shrink-0 rounded border px-1.5 py-0.5 font-mono text-[10px] sm:inline">

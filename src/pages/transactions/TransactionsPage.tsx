@@ -17,10 +17,6 @@ import type { TransactionType } from '@/types/coop'
 const TYPE_OPTIONS: Array<{ value: TransactionType | 'ALL'; label: string }> = [
   { value: 'ALL', label: 'All types' },
   { value: 'SAVINGS', label: 'Savings' },
-  { value: 'SHARE', label: 'Share' },
-  { value: 'LOAN_DISBURSEMENT', label: 'Loan Disbursement' },
-  { value: 'LOAN_REPAYMENT', label: 'Loan Repayment' },
-  { value: 'DIVIDEND', label: 'Dividend' },
   { value: 'WELFARE', label: 'Welfare' },
   { value: 'FEE', label: 'Fee' },
   { value: 'ADJUSTMENT', label: 'Adjustment' },
@@ -60,7 +56,8 @@ export function TransactionsPage() {
             variant="secondary"
             onClick={() => toast('Transaction ledger exported.')}
           >
-            <Download className="size-4" aria-hidden="true" /> Export
+            <Download className="size-4" aria-hidden="true" />
+            Export
           </Button>
         }
       />
@@ -77,6 +74,7 @@ export function TransactionsPage() {
               onChange={(event) => setType(event.target.value)}
               options={TYPE_OPTIONS}
             />
+
             <Select
               value={status}
               onChange={(event) => setStatus(event.target.value)}

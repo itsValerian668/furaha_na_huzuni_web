@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from 'recharts'
 
 import { ChartCard } from '@/components/financial/ChartCard'
@@ -7,15 +8,22 @@ import { DataTable } from '@/components/tables/DataTable'
 import { MemberAvatar } from '@/components/layout/MemberAvatar'
 import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
 import { StatusBadge } from '@/components/ui/StatusBadge'
 import { adminOverview, savingsGrowthSeries } from '@/data/admin'
 import { members } from '@/data/members'
+import {
+  calculateFinancialSummary,
+  useFinanceStore,
+} from '@/stores/finance.store'
 import { toast } from '@/stores/toast.store'
 import { formatCurrency } from '@/utils/currency'
 import { formatDate } from '@/utils/date'
 
 export function AdminSavingsPage() {
   const activeSavers = members.filter((member) => member.totalSavings > 0)
+  const expenses = useFinanceStore((state) => state.expenses)
+  const summary = calculateFinancialSummary(expenses)
 
   return (
     <div>
@@ -102,6 +110,25 @@ export function AdminSavingsPage() {
           </AreaChart>
         </ResponsiveContainer>
       </ChartCard>
+
+      <Card className="mb-6 flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center">
+        <div>
+          <h2 className="text-text text-sm font-semibold">
+            Finance-linked group expenses
+          </h2>
+          <p className="text-text-muted mt-1 text-sm">
+            {formatCurrency(summary.recordedExpenses)} recorded · Cash
+            remaining {formatCurrency(summary.cashPosition)}. Member savings
+            balances are unchanged.
+          </p>
+        </div>
+        <Link
+          to="/admin/finance"
+          className="text-brand-strong text-sm font-semibold hover:underline"
+        >
+          Manage in Finance
+        </Link>
+      </Card>
 
       <DataTable
         data={members}

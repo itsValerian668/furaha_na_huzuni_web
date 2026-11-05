@@ -1,12 +1,15 @@
 import { cooperativeEvents } from '@/data/events'
-import { loans } from '@/data/loans'
 import { members } from '@/data/members'
 import { transactions } from '@/data/transactions'
 
 export interface SearchResult {
   id: string
   category:
-    'Members' | 'Transactions' | 'Loans' | 'Events' | 'Reports' | 'Documents'
+    | 'Members'
+    | 'Transactions'
+    | 'Events'
+    | 'Reports'
+    | 'Documents'
   title: string
   subtitle: string
   to: string
@@ -28,13 +31,6 @@ const staticEntries: SearchResult[] = [
     to: '/statements/savings',
   },
   {
-    id: 'doc-loan-statement',
-    category: 'Documents',
-    title: 'Loan Statement',
-    subtitle: 'Personal statement',
-    to: '/statements/loans',
-  },
-  {
     id: 'report-financial',
     category: 'Reports',
     title: 'Financial Report',
@@ -47,13 +43,6 @@ const staticEntries: SearchResult[] = [
     title: 'Savings Report',
     subtitle: 'Cooperative-wide report',
     to: '/admin/reports/savings',
-  },
-  {
-    id: 'report-loans',
-    category: 'Reports',
-    title: 'Loan Report',
-    subtitle: 'Cooperative-wide report',
-    to: '/admin/reports/loans',
   },
 ]
 
@@ -72,13 +61,6 @@ export const searchIndex: SearchResult[] = [
     title: transaction.description,
     subtitle: `${transaction.reference} · ${transaction.memberName}`,
     to: '/transactions',
-  })),
-  ...loans.map((loan) => ({
-    id: loan.id,
-    category: 'Loans' as const,
-    title: `${loan.type} — ${loan.memberName}`,
-    subtitle: `${loan.reference} · ${loan.status}`,
-    to: `/loans/${loan.id}`,
   })),
   ...cooperativeEvents.map((event) => ({
     id: event.id,

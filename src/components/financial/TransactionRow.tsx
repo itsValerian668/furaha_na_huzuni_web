@@ -1,9 +1,6 @@
 import {
   ArrowLeftRight,
-  Gift,
-  HandCoins,
   HeartHandshake,
-  PieChart,
   PiggyBank,
   Receipt,
 } from 'lucide-react'
@@ -16,10 +13,6 @@ import { formatDate } from '@/utils/date'
 
 const TYPE_ICON: Record<Transaction['type'], LucideIcon> = {
   SAVINGS: PiggyBank,
-  SHARE: PieChart,
-  LOAN_DISBURSEMENT: HandCoins,
-  LOAN_REPAYMENT: HandCoins,
-  DIVIDEND: Gift,
   WELFARE: HeartHandshake,
   FEE: Receipt,
   ADJUSTMENT: ArrowLeftRight,

@@ -9,18 +9,17 @@ import {
 import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
 
-import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/feedback/EmptyState'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { Button } from '@/components/ui/Button'
 import { Tabs } from '@/components/ui/Tabs'
 import { useNotificationsStore } from '@/stores/notifications.store'
-import { formatDateTime } from '@/utils/date'
 import type { NotificationCategory } from '@/types/coop'
 import { cn } from '@/utils/cn'
+import { formatDateTime } from '@/utils/date'
 
 const CATEGORY_ICON: Record<NotificationCategory, LucideIcon> = {
   Financial: Gift,
-  Loan: PiggyBank,
   Savings: PiggyBank,
   Community: HeartHandshake,
   System: Settings,
@@ -35,13 +34,14 @@ export function NotificationsPage() {
   const categories = [
     'All',
     'Financial',
-    'Loan',
     'Savings',
     'Community',
     'System',
   ]
+
   const filtered =
     filter === 'All' ? items : items.filter((item) => item.category === filter)
+
   const unreadCount = items.filter((item) => !item.read).length
 
   return (
@@ -57,8 +57,8 @@ export function NotificationsPage() {
         actions={
           unreadCount > 0 ? (
             <Button variant="secondary" onClick={markAllRead}>
-              <CheckCheck className="size-4" aria-hidden="true" /> Mark all as
-              read
+              <CheckCheck className="size-4" aria-hidden="true" />
+              Mark all as read
             </Button>
           ) : undefined
         }
@@ -85,6 +85,7 @@ export function NotificationsPage() {
             <div className="divide-border divide-y">
               {filtered.map((item) => {
                 const Icon = CATEGORY_ICON[item.category]
+
                 return (
                   <button
                     key={item.id}
@@ -98,18 +99,22 @@ export function NotificationsPage() {
                     <span className="bg-brand-soft text-brand-strong flex size-9 shrink-0 items-center justify-center rounded-full">
                       <Icon className="size-4" aria-hidden="true" />
                     </span>
+
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <p className="text-text truncate text-sm font-semibold">
                           {item.title}
                         </p>
+
                         {!item.read && (
                           <span className="bg-brand size-1.5 shrink-0 rounded-full" />
                         )}
                       </div>
+
                       <p className="text-text-muted mt-0.5 text-sm">
                         {item.message}
                       </p>
+
                       <p className="text-text-muted mt-1 text-xs">
                         {formatDateTime(item.date)} · {item.category}
                       </p>

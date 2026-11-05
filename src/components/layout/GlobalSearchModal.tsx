@@ -50,7 +50,7 @@ export function GlobalSearchModal({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search members, transactions, loans, events, reports…"
+          placeholder="Search members, transactions, events, reports…"
           className="border-border bg-surface text-text placeholder:text-text-muted focus-visible:border-brand w-full rounded-lg border py-2.5 pr-3 pl-9 text-sm"
         />
       </div>

@@ -9,7 +9,7 @@ export const cooperativeEvents: CooperativeEvent[] = [
     time: '09:00',
     location: 'Kinondoni Community Hall, Dar es Salaam',
     description:
-      'Review of FY2026 performance, dividend approval and committee elections.',
+      'Review of FY2026 performance, savings progress and committee elections.',
   },
   {
     id: 'EV-02',
@@ -19,7 +19,7 @@ export const cooperativeEvents: CooperativeEvent[] = [
     time: '14:00',
     location: 'Cooperative Office, Kinondoni',
     description:
-      'A member workshop on budgeting, savings discipline and responsible borrowing.',
+      'A member workshop on budgeting, savings discipline and responsible financial planning.',
   },
   {
     id: 'EV-03',

@@ -8,6 +8,7 @@ export function Modal({
   open,
   onClose,
   title,
+  dialogLabel,
   description,
   children,
   footer,
@@ -15,23 +16,29 @@ export function Modal({
 }: {
   open: boolean
   onClose: () => void
-  title: string
+  title?: string
+  dialogLabel?: string
   description?: string
   children: ReactNode
   footer?: ReactNode
   size?: 'sm' | 'md' | 'lg'
 }) {
   const dialogRef = useRef<HTMLDivElement>(null)
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') onCloseRef.current()
     }
     document.addEventListener('keydown', onKeyDown)
     dialogRef.current?.focus()
     return () => document.removeEventListener('keydown', onKeyDown)
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 
@@ -48,7 +55,8 @@ export function Modal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
+        aria-labelledby={title ? 'modal-title' : undefined}
+        aria-label={title ? undefined : dialogLabel ?? 'Dialog'}
         tabIndex={-1}
         className={cn(
           'animate-slide-up border-border bg-surface shadow-elevated relative w-full rounded-2xl border p-6 outline-none',
@@ -57,9 +65,11 @@ export function Modal({
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <div>
-            <h2 id="modal-title" className="text-text text-lg font-semibold">
-              {title}
-            </h2>
+            {title && (
+              <h2 id="modal-title" className="text-text text-lg font-semibold">
+                {title}
+              </h2>
+            )}
             {description && (
               <p className="text-text-muted mt-1 text-sm">{description}</p>
             )}
