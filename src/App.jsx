@@ -9,18 +9,19 @@ import ChangePassword from './pages/ChangePassword';
 import RequestsFeed from './pages/RequestsFeed';
 import MyRequests from './pages/MyRequests';
 import CreateRequest from './pages/CreateRequest';
+import MemberDashboard from './pages/MemberDashboard';
+import MemberRequests from './pages/MemberRequests';
+import MemberContributions from './pages/MemberContributions';
+import ManageRequests from './pages/admin/ManageRequests';
+import MemberPayments from './pages/MemberPayments';
+import MemberDependants from './pages/MemberDependants';
 import RequestDetail from './pages/RequestDetail';
 import Appearance from './pages/Appearance';
 import MyDues from './pages/MyDues';
-import MyContributions from './pages/MyContributions';
 import AdminDashboard from './pages/admin/Dashboard';
-import AdminPendingRequests from './pages/admin/PendingRequests';
-import AdminAllRequests from './pages/admin/AllRequests';
-import AdminUsers from './pages/admin/Users';
-import AdminCategories from './pages/admin/Categories';
-import AdminDuesSchedules from './pages/admin/DuesSchedules';
-import AdminDuesScheduleDetail from './pages/admin/DuesScheduleDetail';
-import AdminTransactions from './pages/admin/Transactions';
+import ManageMembers from './pages/admin/ManageMembers';
+import ManageMeetings from './pages/admin/ManageMeetings';
+import ManageContributions from './pages/admin/ManageContributions';
 
 export default function App() {
   return (
@@ -35,23 +36,23 @@ export default function App() {
               <Route path="/appearance" element={<Appearance />} />
 
               <Route element={<Layout />}>
-                <Route path="/" element={<RequestsFeed />} />
-                <Route path="/requests/mine" element={<MyRequests />} />
+                <Route path="/" element={<MemberDashboard />} />
+                <Route path="/dashboard" element={<MemberDashboard />} />
+                <Route path="/requests/mine" element={<MemberRequests />} />
                 <Route path="/requests/new" element={<CreateRequest />} />
                 <Route path="/requests/:id" element={<RequestDetail />} />
                 <Route path="/dues" element={<MyDues />} />
-                <Route path="/contributions" element={<MyContributions />} />
+                <Route path="/contributions" element={<MemberContributions />} />
+                <Route path="/payments" element={<MemberPayments />} />
+                <Route path="/dependants" element={<MemberDependants />} />
 
                 <Route element={<AdminRoute />}>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<AdminDashboard />} />
-                    <Route path="requests/pending" element={<AdminPendingRequests />} />
-                    <Route path="requests" element={<AdminAllRequests />} />
-                    <Route path="users" element={<AdminUsers />} />
-                    <Route path="categories" element={<AdminCategories />} />
-                    <Route path="dues-schedules" element={<AdminDuesSchedules />} />
-                    <Route path="dues-schedules/:id" element={<AdminDuesScheduleDetail />} />
-                    <Route path="transactions" element={<AdminTransactions />} />
+                    <Route path="members" element={<ManageMembers />} />
+                    <Route path="requests" element={<ManageRequests />} />
+                    <Route path="meetings" element={<ManageMeetings />} />
+                    <Route path="contributions" element={<ManageContributions />} />
                   </Route>
                 </Route>
               </Route>

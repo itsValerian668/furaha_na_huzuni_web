@@ -7,12 +7,10 @@ import { useLocation } from 'react-router-dom';
 
 const TABS = [
   { to: '/admin', label: 'Dashboard', match: '/admin' },
-  { to: '/admin/requests/pending', label: 'Pending Requests', match: '/admin/requests/pending' },
-  { to: '/admin/requests', label: 'All Requests', match: '/admin/requests' },
-  { to: '/admin/users', label: 'Users', match: '/admin/users' },
-  { to: '/admin/categories', label: 'Categories', match: '/admin/categories' },
-  { to: '/admin/dues-schedules', label: 'Dues Schedules', match: '/admin/dues-schedules' },
-  { to: '/admin/transactions', label: 'Transactions', match: '/admin/transactions' },
+  { to: '/admin/members', label: 'Manage Members', match: '/admin/members' },
+  { to: '/admin/requests', label: 'Manage Requests', match: '/admin/requests' },
+  { to: '/admin/meetings', label: 'Manage Meetings', match: '/admin/meetings' },
+  { to: '/admin/contributions', label: 'Manage Contributions', match: '/admin/contributions' },
 ];
 
 export default function AdminLayout() {

@@ -8,8 +8,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 import Link from '@mui/material/Link';
 import Divider from '@mui/material/Divider';
-import apiClient from '../../api/client';
 import { formatTsh, formatDateTime, monthName } from '../../utils/format';
+import { demoActivity, demoAdminStats } from '../../data/demo';
 
 function StatCard({ label, value, sub, color = 'primary.main' }) {
   return (
@@ -36,31 +36,12 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const [statsRes, activityRes] = await Promise.all([
-          apiClient.get('/admin/dashboard/stats'),
-          apiClient.get('/admin/dashboard/recent-activity'),
-        ]);
-        if (!cancelled) {
-          setStats(statsRes.data);
-          setActivity(activityRes.data);
-        }
-      } catch {
-        if (!cancelled) setError('Could not load dashboard data.');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
+    const timer = setTimeout(() => {
+      setStats(demoAdminStats);
+      setActivity(demoActivity);
+      setLoading(false);
+    }, 250);
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) return <CircularProgress size={28} />;

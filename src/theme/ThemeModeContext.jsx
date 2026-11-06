@@ -31,6 +31,11 @@ function buildTheme(presetKey, mode) {
           root: { border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)'}` },
         },
       },
+      MuiTableContainer: {
+        styleOverrides: {
+          root: { borderRadius: '4px !important' },
+        },
+      },
     },
   });
 }

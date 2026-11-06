@@ -10,6 +10,6 @@ export function ProtectedRoute() {
 export function AdminRoute() {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== 'admin') return <Navigate to="/" replace />;
+  // Prototype mode: every authenticated account can preview member and admin areas.
   return <Outlet />;
 }
