@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -28,6 +28,9 @@ import EventIcon from '@mui/icons-material/Event';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import Collapse from '@mui/material/Collapse';
 import { useAuth } from '../context/AuthContext';
 import { useThemeMode } from '../theme/ThemeModeContext';
 
@@ -43,9 +46,11 @@ export default function Layout() {
   const { user, logout } = useAuth();
   const { mode, setMode } = useThemeMode();
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(() => location.pathname.startsWith('/admin'));
 
   async function handleLogout() {
     await logout();
@@ -66,13 +71,20 @@ export default function Layout() {
             <ListItemText primary={link.label} />
           </ListItemButton>
         ))}
-        <ListItemButton component={NavLink} to="/admin" onClick={() => setMobileOpen(false)} sx={{ borderRadius: 2, mb: 0.5, '&.active': { bgcolor: 'primary.main', color: 'primary.contrastText', '& .MuiListItemIcon-root': { color: 'inherit' } } }}>
+        <ListItemButton onClick={() => setAdminOpen((open) => !open)} sx={{ borderRadius: 2, mb: 0.5, bgcolor: adminOpen ? 'action.hover' : 'transparent' }}>
           <ListItemIcon sx={{ minWidth: 38 }}><AdminPanelSettingsIcon /></ListItemIcon>
           <ListItemText primary="Administration" secondary="Admin + member view" />
+          {adminOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </ListItemButton>
-        <ListItemButton component={NavLink} to="/admin/members" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><GroupsIcon /></ListItemIcon><ListItemText primary="Manage members" /></ListItemButton>
-        <ListItemButton component={NavLink} to="/admin/meetings" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><EventIcon /></ListItemIcon><ListItemText primary="Manage meetings" /></ListItemButton>
-        <ListItemButton component={NavLink} to="/admin/contributions" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><SavingsIcon /></ListItemIcon><ListItemText primary="Manage contributions" /></ListItemButton>
+        <Collapse in={adminOpen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton component={NavLink} to="/admin" end onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><DashboardIcon /></ListItemIcon><ListItemText primary="Admin dashboard" /></ListItemButton>
+            <ListItemButton component={NavLink} to="/admin/members" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><GroupsIcon /></ListItemIcon><ListItemText primary="Manage members" /></ListItemButton>
+            <ListItemButton component={NavLink} to="/admin/requests" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><RequestQuoteIcon /></ListItemIcon><ListItemText primary="Manage requests" /></ListItemButton>
+            <ListItemButton component={NavLink} to="/admin/meetings" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><EventIcon /></ListItemIcon><ListItemText primary="Manage meetings" /></ListItemButton>
+            <ListItemButton component={NavLink} to="/admin/contributions" onClick={() => setMobileOpen(false)} sx={{ pl: 4, borderRadius: 2 }}><ListItemIcon sx={{ minWidth: 38 }}><SavingsIcon /></ListItemIcon><ListItemText primary="Manage contributions" /></ListItemButton>
+          </List>
+        </Collapse>
       </List>
       <Box sx={{ mt: 'auto', p: 1.5 }}>
         <Divider sx={{ mb: 1 }} />
